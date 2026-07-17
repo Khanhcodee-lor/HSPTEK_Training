@@ -102,11 +102,11 @@ int timMaSV (Node* head, const char* maSV) {
     Node* temp = head;
     while (temp != NULL) {
         if (strcmp(temp->data.maSV, maSV) == 0) {
-            return 1; // Tim thay
+            return 1; 
         }
         temp = temp->next;
     }
-    return 0; // Khong tim thay
+    return 0; 
 }
 
 int xoaSVTheoMa (Node** head, const char* maSV) {
