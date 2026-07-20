@@ -1,23 +1,13 @@
 /*
 Bai 2: Quan ly danh sach san pham bang danh sach lien ket don
-Dung CON TRO HAM (function pointer) cho sap xep va tim kiem
-
-Muc tieu:
-- Luyen tap con tro, struct, danh sach lien ket, cap phat dong, con tro ham.
-
 Yeu cau:
 1. Nhap n san pham va them vao cuoi danh sach.
 2. In danh sach san pham.
-3. Tim san pham theo ma (dung con tro ham).
+3. Tim san pham theo ma.
 4. Xoa san pham theo ma.
-5. Sap xep danh sach theo don gia giam dan (dung con tro ham).
+5. Sap xep danh sach theo don gia giam dan.
 6. In danh sach sau khi xoa va sap xep.
 7. Giai phong toan bo bo nho da cap phat.
-
-Goi y - Con tro ham:
-- typedef int (*CompareFunc)(float a, float b);  // So sanh gia
-- typedef int (*SearchFunc)(SanPham sp, const char* ma);  // Tim kiem
-- Truyen ham vao sapXepGiamDan va timTheoMa
 */
 
 #include <stdio.h>
@@ -35,39 +25,6 @@ typedef struct Node {
 	struct Node* next;
 } Node;
 
-// ===== CON TRO HAM =====
-typedef int (*CompareFunc)(float a, float b);  // Tra ve 1 neu a > b, 0 neu bang, -1 neu a < b
-typedef int (*SearchFunc)(SanPham sp, const char* criteria);  // Tra ve 1 neu khop, 0 neu khong
-
-// ===== STRUCT CHUA CON TRO HAM =====
-typedef struct {
-	CompareFunc compare;  // Con tro ham so sanh
-	SearchFunc search;    // Con tro ham tim kiem
-} Callbacks;  // Struct chua cac ham callback
-
-// ===== HAM SO SANH =====
-int compareGiamDan(float a, float b) {
-	if (a > b) return 1;
-	if (a < b) return -1;
-	return 0;
-}
-
-int compareTangDan(float a, float b) {
-	if (a < b) return 1;
-	if (a > b) return -1;
-	return 0;
-}
-
-// ===== HAM TIM KIEM =====
-int searchByMa(SanPham sp, const char* ma) {
-	return strcmp(sp.maSP, ma) == 0;
-}
-
-int searchByName(SanPham sp, const char* name) {
-	return strstr(sp.tenSP, name) != NULL;
-}
-
-// ===== CAC HAM CHINH =====
 Node* createNode(SanPham sp) {
 	Node* newNode = (Node*)malloc(sizeof(Node));
 	if (newNode == NULL) {
@@ -116,11 +73,11 @@ void xuatDanhSach(Node* head) {
 	printf("---\n");
 }
 
-// Tim san pham dung CON TRO HAM (tu struct Callbacks)
-Node* timSanPham(Node* head, const char* criteria, Callbacks callbacks) {
+// Tim kiem san pham theo ma truc tiep (khong dung con tro ham)
+Node* timSanPhamTheoMa(Node* head, const char* maSP) {
 	Node* temp = head;
 	while (temp != NULL) {
-		if (callbacks.search(temp->data, criteria)) {  // Goi ham tu struct
+		if (strcmp(temp->data.maSP, maSP) == 0) {
 			return temp;
 		}
 		temp = temp->next;
@@ -148,8 +105,8 @@ int xoaSPTheoMa(Node** head, const char* maSP) {
 	return 0;
 }
 
-// Sap xep dung CON TRO HAM (tu struct Callbacks)
-int sapXepDanhSach(Node** head, Callbacks callbacks) {
+// Sap xep theo don gia giam dan truc tiep (khong dung con tro ham)
+int sapXepDanhSachGiamDan(Node** head) {
 	if (*head == NULL || (*head)->next == NULL) {
 		return 0;
 	}
@@ -159,12 +116,12 @@ int sapXepDanhSach(Node** head, Callbacks callbacks) {
 
 	while (current != NULL) {
 		Node* nextNode = current->next;
-		if (sorted == NULL || callbacks.compare(current->data.donGia, sorted->data.donGia) > 0) {
+		if (sorted == NULL || current->data.donGia > sorted->data.donGia) {
 			current->next = sorted;
 			sorted = current;
 		} else {
 			Node* temp = sorted;
-			while (temp->next != NULL && callbacks.compare(temp->next->data.donGia, current->data.donGia) >= 0) {
+			while (temp->next != NULL && temp->next->data.donGia >= current->data.donGia) {
 				temp = temp->next;
 			}
 			current->next = temp->next;
@@ -187,17 +144,12 @@ void giaiPhongDanhSach(Node* head) {
 
 int main() {
 	int soLuong;
-	printf("Quan ly san pham bang danh sach lien ket (dung CON TRO HAM trong STRUCT)\n");
+	printf("Quan ly san pham bang danh sach lien ket\n");
 	printf("Nhap so luong san pham: ");
 	if (scanf("%d", &soLuong) != 1 || soLuong <= 0) {
 		printf("So luong khong hop le.\n");
 		return 1;
 	}
-
-	// ===== KHOI TAO STRUCT CALLBACKS =====
-	Callbacks callbacks;
-	callbacks.compare = compareGiamDan;    // Gan ham so sanh vao struct
-	callbacks.search = searchByMa;          // Gan ham tim kiem vao struct
 
 	Node* head = NULL;
 	for (int i = 0; i < soLuong; i++) {
@@ -217,14 +169,14 @@ int main() {
 	printf("\n");
 	xuatDanhSach(head);
 
-	// TIM KIEM dung CON TRO HAM trong struct
+	// TIM KIEM theo ma
 	char maCanTim[10];
 	printf("Nhap ma san pham can tim: ");
 	if (scanf("%9s", maCanTim) != 1) {
 		giaiPhongDanhSach(head);
 		return 1;
 	}
-	Node* timThay = timSanPham(head, maCanTim, callbacks);  // Truyen callbacks struct
+	Node* timThay = timSanPhamTheoMa(head, maCanTim);
 	if (timThay != NULL) {
 		printf("Tim thay: %s - %s (%.2f)\n", 
 		       timThay->data.maSP, timThay->data.tenSP, timThay->data.donGia);
@@ -248,9 +200,9 @@ int main() {
 	printf("\nDanh sach sau khi xoa:\n");
 	xuatDanhSach(head);
 
-	// SAP XEP dung CON TRO HAM trong struct
+	// SAP XEP
 	printf("Sap xep theo gia giam dan...\n");
-	sapXepDanhSach(&head, callbacks);  // Truyen callbacks struct
+	sapXepDanhSachGiamDan(&head);
 	xuatDanhSach(head);
 
 	giaiPhongDanhSach(head);
