@@ -100,11 +100,11 @@ void giaiPhongDanhSach(Node* head) {
 
 int timMaSV (Node* head, const char* maSV) {
     Node* temp = head;
-    while (temp != NULL) {
+    while (temp != NULL) {  // Lặp qua node
         if (strcmp(temp->data.maSV, maSV) == 0) {
             return 1; 
         }
-        temp = temp->next;
+        temp = temp->next; // Đi qua các phần tử bằng con trở next 
     }
     return 0; 
 }
@@ -164,7 +164,7 @@ int main() {
         return 1;
     }
 
-    Node* head = NULL;
+    Node* head = NULL;  // con tro rong
     for (int i = 0; i < soLuong; i++) {
         SinhVien sv;
         if (nhapMotSinhVien(&sv, i + 1) != 0) {
