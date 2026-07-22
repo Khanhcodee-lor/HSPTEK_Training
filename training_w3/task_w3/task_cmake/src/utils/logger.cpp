@@ -1,0 +1,8 @@
+#include "utils/logger.hpp"
+#include <iostream>
+
+namespace Utils {
+    void log(const std::string& tag, const std::string& message) {
+        std::cout << "[" << tag << "] " << message << std::endl;
+    }
+}

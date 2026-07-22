@@ -1,0 +1,5 @@
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/build/CMakeFiles/geometry_lib.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/build/CMakeFiles/utils_lib.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/build/CMakeFiles/geo_app.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/build/CMakeFiles/edit_cache.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/build/CMakeFiles/rebuild_cache.dir

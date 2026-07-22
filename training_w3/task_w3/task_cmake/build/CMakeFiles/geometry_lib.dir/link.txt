@@ -1,0 +1,2 @@
+/usr/bin/ar qc libgeometry_lib.a CMakeFiles/geometry_lib.dir/src/geometry/circle.cpp.o CMakeFiles/geometry_lib.dir/src/geometry/rectangle.cpp.o CMakeFiles/geometry_lib.dir/src/geometry/shape_factory.cpp.o CMakeFiles/geometry_lib.dir/src/geometry/triangle.cpp.o
+/usr/bin/ranlib libgeometry_lib.a

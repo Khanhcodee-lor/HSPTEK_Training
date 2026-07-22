@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/geo_app.dir/src/main.cpp.o -o geo_app  libgeometry_lib.a libutils_lib.a 
