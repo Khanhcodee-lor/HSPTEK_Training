@@ -124,22 +124,3 @@ cmake --build build_arm
 # Flag -L báo cho QEMU thư mục chứa các thư viện liên kết động động của ARM64
 qemu-aarch64 -L /usr/aarch64-linux-gnu build_arm/HelloArmApp
 ```
-
-### 3. Xác Minh Kiến Trúc Đầu Ra
-Sử dụng lệnh `file` trên máy Host:
-```bash
-file build_arm/HelloArmApp
-```
-* **Kết quả trả về:** Chứa chuỗi `ELF 64-bit LSB executable, ARM aarch64 ... dynamically linked`, chứng minh file chạy đã được đóng gói chính xác cho hệ điều hành ARM 64-bit.
-* **Cơ chế mô phỏng (Simulation Mode):** Ứng dụng tích hợp khả năng phát hiện đường dẫn phần cứng `/sys/class/gpio`. Khi chạy giả lập trên Host, chương trình tự động chuyển sang Simulation Mode hiển thị trạng thái LED lên màn hình thay vì bị crash do thiếu phần cứng thật.
-
----
-
-## KẾT LUẬN & ĐÁNH GIÁ CHUNG
-
-* **Makefile:** Cung cấp khả năng kiểm soát chi tiết nhất đến từng bước biên dịch của compiler. Thích hợp cho các dự án quy mô vừa và nhỏ hoặc các tác vụ hệ thống tùy biến cao.
-* **CMake:** Ti chuẩn công nghiệp cho các dự án C++ lớn, đa nền tảng và đa module. Khả năng tự động hóa và tích hợp quản lý thư viện tĩnh/động rất mạnh mẽ.
-* **Cross-compilation:** Kỹ năng bắt buộc đối với lập trình viên hệ thống nhúng (Embedded Linux). Sự kết hợp giữa bộ cross-compiler (`aarch64-linux-gnu-g++`) và trình mô phỏng (`QEMU`) tạo ra một quy trình phát triển và kiểm thử cực kỳ nhanh chóng và tiện lợi trước khi deploy lên phần cứng thực tế.
-
-> [!NOTE]
-> Toàn bộ 3 bài tập thực hành trên đã được thiết lập, biên dịch thành công 100% và chạy ổn định không phát sinh lỗi trên môi trường kiểm thử Linux.
