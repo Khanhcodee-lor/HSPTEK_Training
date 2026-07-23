@@ -1,134 +1,145 @@
-# Báo Cáo Thực Hành Tuần 3: Makefile, CMake & Cross-Compilation
+# Báo Cáo Thực Hành Tuần 3: Build System (Makefile, CMake) & Cross-Compilation
 
-Báo cáo chi tiết kết quả thực hành và học tập Tuần 3 về các kiến thức **Makefile**, **CMake (Build System)** và **Biên dịch chéo (Cross-Compilation cho ARM)**.
-
----
-
-## 📑 Nội Dung Học Tập (Lý Thuyết)
-
-Trong tuần 3, các kiến thức cốt lõi về hệ thống build system đã được tìm hiểu và áp dụng bao gồm:
-
-### 1. Makefile Căn Bản & Nâng Cao
-* **Cú pháp quy tắc (Rules)**: Khái niệm `target`, `prerequisite`, `recipe` và quy tắc thụt lề bằng phím **TAB**.
-* **Ký tự viết tắt tự động (Automatic Variables)**:
-  * `$@`: Đại diện cho tên **Target** hiện tại.
-  * `$<`: Đại diện cho **Prerequisite đầu tiên**.
-  * `$^`: Đại diện cho **Tất cả các Prerequisites**.
-* **Quy tắc mẫu (Pattern Rules với `%`)**: Tự động hóa quy tắc biên dịch file `.cpp` thành file `.o` mà không cần viết tay từng file.
-* **Auto Dependency (`.d` files)**: 
-  * Sử dụng flag `-MMD -MP` để `g++` tự động quét danh sách các file header (`.hpp`) phụ thuộc.
-  * Nạp file phụ thuộc vào Makefile bằng cú pháp `-include $(DEPS)` giúp tự động biên dịch lại khi sửa file `.hpp`.
-* **Phony Targets (`.PHONY`)**: Khai báo các mục tiêu giả lập (`clean`, `run`, `all`) để tránh xung đột với tên file trên ổ cứng.
-* **Quản lý cấu trúc thư mục `build/`**:
-  * Tự động tạo thư mục `build/` chứa tất cả file trung gian `.o` và `.d` để giữ cho thư mục nguồn `src/` luôn sạch sẽ.
-  * Sử dụng `$(dir $@)` để tự động đẻ ra các thư mục con trong `build/`.
-* **Biên dịch theo điều kiện (Debug vs Release)**:
-  * Sử dụng cú pháp điều kiện `ifeq` và cờ `-DDEBUG` để chuyển đổi giữa chế độ **Release** (`-O3`) và **Debug** (`-g -O0 -DDEBUG`).
-
-### 2. CMake (Meta-Build System)
-* **Khái niệm**: CMake là công cụ sinh file build cấp cao. Thay vì viết Makefile thủ công, lập trình viên mô tả cấu trúc dự án trong `CMakeLists.txt` và CMake sẽ tự tạo ra `Makefile` chuẩn hóa.
-* **Các câu lệnh cốt lõi**:
-  * `cmake_minimum_required(VERSION 3.16)`: Khai báo phiên bản CMake tối thiểu.
-  * `project(...)`: Khai báo tên dự án và ngôn ngữ (`CXX`).
-  * `include_directories(...)`: Khai báo thư mục chứa file header.
-  * `add_executable(...)`: Tạo file thực thi từ danh sách file nguồn.
-
-### 3. Cross-Compilation (Biên dịch chéo cho ARM)
-* **Khái niệm**: Biên dịch mã nguồn trên máy tính Host (x86_64) để tạo ra file thực thi nhị phân chạy trên kiến trúc Target khác (ARM 64-bit / AArch64).
-* **Toolchain**: Sử dụng `aarch64-linux-gnu-g++`.
-* **Static Linking (`-static`)**: Đóng gói toàn bộ thư viện vào file nhị phân để chạy độc lập.
-* **Giả lập QEMU**: Sử dụng `qemu-aarch64` để chạy kiểm thử ứng dụng ARM64 ngay trên máy tính x86_64.
+Báo cáo tổng hợp chi tiết kết quả thực hành, học tập và cấu hình hệ thống xây dựng dự án (Build System) trong Tuần 3, tập trung vào **Makefile Căn bản & Nâng cao**, **Meta-Build System CMake (Đa module/Thư viện tĩnh)** và **Biên dịch chéo (Cross-Compilation cho ARM64)**.
 
 ---
 
-## 🛠️ Danh Sách Bài Tập Hoàn Thành
+## Cấu Trúc Tổng Quan Thư Mục Bài Tập
 
-### 1. Bài tập 1: Xây dựng Makefile Chuẩn & Nâng Cao
-* **Thư mục**: `task_w3/exercise1_makefile/`, `task_w3/exercise1_challenge/`, `task_w3/exercise1_advanced/`
-* **Mô tả**: Tự tay thiết kế Makefile build dự án C++ multi-file có phân chia `src/` và `include/`.
-* **Cấu trúc Makefile chuẩn**:
-  ```makefile
-  CXX = g++
-  CXXFLAGS = -Wall -Iinclude -MMD -MP
-  
-  SRCS = $(wildcard src/*.cpp)
-  OBJS = $(SRCS:src/%.cpp=build/%.o)
-  DEPS = $(OBJS:.o=.d)
-  
-  app: $(OBJS)
-  	$(CXX) $(CXXFLAGS) $^ -o $@
-  
-  build/%.o: src/%.cpp
-  	mkdir -p build
-  	$(CXX) $(CXXFLAGS) -c $< -o $@
-  
-  clean:
-  	rm -rf build app
-  
-  .PHONY: clean
-  -include $(DEPS)
-  ```
+Các nội dung thực hành được chia làm 3 phần độc lập nằm trong thư mục [task_w3](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/):
 
-* **Hướng dẫn Biên dịch & Chạy**:
-  ```bash
-  cd task_w3/exercise1_makefile
-  make        # Biên dịch ứng dụng
-  ./app       # Chạy ứng dụng
-  make clean  # Xóa sạch thư mục build/ và file app
-  ```
+```text
+training_w3/
+├── task_w3/
+│   ├── makefile/          <- Bài tập 1: Xây dựng Makefile C++ đa thư mục, tự động phụ thuộc và đa chế độ build
+│   ├── task_cmake/        <- Bài tập 2: Quản lý dự án đa module, đóng gói thư viện tĩnh (Static Library) qua CMake
+│   └── task_hello_arm/    <- Bài tập 3: Biên dịch chéo cho vi xử lý ARM 64-bit và giả lập bằng QEMU
+└── README.md              <- Báo cáo tổng quát này (File này)
+```
 
 ---
 
-### 2. Bài tập 2: Cấu hình Build System với CMake
-* **Thư mục**: `task_w3/exercise2_cmake/`
-* **Mô tả**: Chuyển đổi dự án C++ multi-file sang quản lý bằng `CMakeLists.txt`.
-* **Cấu trúc `CMakeLists.txt`**:
-  ```cmake
-  cmake_minimum_required(VERSION 3.16)
-  project(MyCMakeApp LANGUAGES CXX)
+## PHẦN 1: MAKEFILE CĂN BẢN & NÂNG CAO (`task_w3/makefile`)
 
-  include_directories(include)
+Nội dung phần này tập trung nghiên cứu cơ chế hoạt động của Make, cách viết quy tắc tự động hóa và quản lý build tối ưu. Chi tiết xem tại báo cáo riêng: [makefile/README.md](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/makefile/README.md).
 
-  add_executable(app_cmake 
-      src/main.cpp 
-      src/math_utils.cpp 
-      src/string_utils.cpp
-  )
-  ```
+### 1. Các Kiến Thức Cốt Lõi Đã Áp Dụng
+* **Cấu trúc Quy tắc (Rule Syntax):** Bao gồm `target` (mục tiêu cần tạo), `prerequisites` (các file phụ thuộc) và `recipe` (lệnh shell thực thi, bắt buộc thụt đầu dòng bằng **TAB**).
+* **Biến tự động (Automatic Variables):**
+  * `$@`: Tên target hiện tại.
+  * `$<`: File phụ thuộc (prerequisite) đầu tiên.
+  * `$^`: Tất cả các file phụ thuộc (không lặp lại).
+* **Quy tắc mẫu (Pattern Rules `%`):** Ví dụ `build/%.o: src/%.cpp` giúp tự động định nghĩa quy tắc biên dịch mọi file `.cpp` thành file đối tượng `.o` tương ứng.
+* **Tự động theo dõi file Header (Auto-Dependency Tracking):**
+  * Sử dụng cờ biên dịch `-MMD -MP` giúp trình biên dịch `g++` tự động xuất file `.d` mô tả các file header `.hpp` được include.
+  * Sử dụng `-include $(DEPS)` để nạp các file `.d` vào Makefile. Nhờ đó, chương trình tự động dịch lại chính xác các file `.o` liên quan khi một file `.hpp` thay đổi.
+* **Mục tiêu ảo (.PHONY):** Khai báo `.PHONY: all clean run` để thông báo cho Make biết đây là các hành động ảo, tránh xung đột nếu trong thư mục có file cùng tên.
 
-* **Hướng dẫn Biên dịch & Chạy (Quy trình 3 bước chuẩn)**:
-  ```bash
-  cd task_w3/exercise2_cmake
-  mkdir build && cd build
-  cmake ..
-  make
-  ./app_cmake
-  ```
+### 2. Biên Dịch Đa Chế Độ (Debug & Release)
+Makefile hỗ trợ tham số `BUILD` từ môi trường (mặc định là `release` nếu chưa cấu hình):
+* **Chế độ Release** (`make BUILD=release`): Sử dụng cờ `-O3 -DNDEBUG` để tối ưu hóa mã nguồn, đạt tốc độ chạy cao nhất và tắt các dòng debug log. Output là file `app`.
+* **Chế độ Debug** (`make BUILD=debug`): Sử dụng cờ `-g -O0 -DDEBUG` để giữ lại các thông tin phân tích dòng lệnh (symbols), tắt tối ưu hóa để dễ dàng debug lỗi. Output là file `app_debug`.
+
+### 3. Quy Trình Sử Dụng Lệnh
+Thao tác trong thư mục [makefile](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/makefile/):
+```bash
+make                 # Biên dịch chế độ Release (mặc định) -> sinh file "app"
+make BUILD=debug     # Biên dịch chế độ Debug -> sinh file "app_debug"
+make run             # Biên dịch và chạy ngay file app
+make run BUILD=debug # Biên dịch và chạy ngay file app_debug
+make clean           # Dọn dẹp toàn bộ file trung gian (.o, .d) và các file chạy
+```
+
+---
+
+## PHẦN 2: QUẢN LÝ DỰ ÁN VỚI CMAKE (`task_w3/task_cmake`)
+
+Nội dung phần này hướng dẫn chuyển đổi từ Makefile thủ công sang sử dụng **CMake (Meta-Build System)** để quản lý dự án C++ đa module chuyên nghiệp. Chi tiết xem tại báo cáo riêng: [task_cmake/README.md](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/README.md).
+
+### 1. Kiến Thức Lý Thuyết CMake Cốt Lõi
+* **Khái niệm Build Generator:** CMake không biên dịch code mà nó sinh cấu hình build (ví dụ như tạo ra file `Makefile` trên Linux hoặc file `.sln` của Visual Studio trên Windows).
+* **Out-of-source Build:** Cơ chế tách biệt thư mục chứa mã nguồn gốc với thư mục build chứa sản phẩm biên dịch (`build/`), đảm bảo thư mục nguồn luôn sạch sẽ.
+* **Tầm Vực Liên Kết (Link Visibility):**
+  * `PRIVATE`: Chỉ liên kết thư viện phụ thuộc để xây dựng chính nó, không truyền dẫn cho các target kế thừa.
+  * `PUBLIC`: Liên kết thư viện và truyền dẫn cấu hình (include path, linker flags) cho các target kế thừa sử dụng.
+  * `INTERFACE`: Chỉ truyền cấu hình cho target kế thừa mà bản thân nó không cần tự build (dùng cho header-only).
+
+### 2. Thiết Kế Đa Module & Đóng Gói Thư Viện Tĩnh
+Dự án được phân chia thành các module và thư viện tĩnh độc lập:
+* **Thư viện tĩnh `geometry_lib`:** Đóng gói toàn bộ logic hình học (Circle, Rectangle, Triangle, Shape Factory) kế thừa đa hình từ giao diện lớp cơ sở `Shape`.
+* **Thư viện tĩnh `utils_lib`:** Đóng gói module ghi log (`logger`).
+* **Ứng dụng chính `geo_app`:** Sử dụng Smart Pointers, Vector, Algorithm sắp xếp đa hình và liên kết (`target_link_libraries`) với 2 thư viện tĩnh trên dưới dạng `PRIVATE`.
+
+### 3. Cú Pháp Cấu Hình `CMakeLists.txt`
+```cmake
+cmake_minimum_required(VERSION 3.16)
+project(AdvancedGeometryApp LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+include_directories(include)
+
+file(GLOB_RECURSE GEOMETRY_SRCS "src/geometry/*.cpp")
+file(GLOB_RECURSE UTILS_SRCS "src/utils/*.cpp")
+
+add_library(geometry_lib STATIC ${GEOMETRY_SRCS})
+add_library(utils_lib STATIC ${UTILS_SRCS})
+
+add_executable(geo_app src/main.cpp)
+target_link_libraries(geo_app PRIVATE geometry_lib utils_lib)
+```
+
+### 4. Quy Trình Sử Dụng Lệnh
+Thao tác trong thư mục [task_cmake](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/):
+```bash
+mkdir -p build && cd build
+cmake ..     # Sinh Makefile từ CMakeLists.txt
+make         # Biên dịch mã nguồn tạo executable "geo_app"
+./geo_app    # Chạy chương trình
+```
 
 ---
 
-### 3. Bài tập 3: Biên dịch chéo cho Kiến trúc ARM (ARM64)
-* **Thư mục**: `task_w3/exercise3_cross_compile/`
-* **Mô tả**: Biên dịch file `hello.cpp` cho chip ARM 64-bit và kiểm thử bằng QEMU.
-* **Các lệnh thực thi**:
-  ```bash
-  cd task_w3/exercise3_cross_compile
+## PHẦN 3: BIÊN DỊCH CHÉO ARM64 & GIẢ LẬP QEMU (`task_w3/task_hello_arm`)
 
-  # 1. Biên dịch chéo tĩnh cho ARM64
-  aarch64-linux-gnu-g++ -static -o hello_arm_static hello.cpp
+Nội dung phần này hướng dẫn kỹ thuật phát triển phần mềm nhúng: Biên dịch mã nguồn từ máy Host (x86_64) sang chạy trên phần cứng Target cấu trúc ARM64 (aarch64). Chi tiết xem tại báo cáo riêng: [task_hello_arm/README.md](file:///home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/README.md).
 
-  # 2. Kiểm tra định dạng nhị phân bằng lệnh file
-  file hello_arm_static
-  # Kết quả: ELF 64-bit LSB statically linked, ARM aarch64...
+### 1. Khái Niệm Biên Dịch Chéo (Cross-Compilation)
+* **Host Machine:** Máy tính phát triển (chạy chip Intel/AMD x86_64).
+* **Target Machine:** Thiết bị chạy ứng dụng thực tế (board nhúng ARM64 như Raspberry Pi, Jetson Nano, i.MX8).
+* **Cross-Compiler:** Trình biên dịch chạy trên Host nhưng sinh mã nhị phân tương thích với Target. Trong bài thực hành sử dụng bộ công cụ `aarch64-linux-gnu-g++`.
 
-  # 3. Giả lập và chạy thử bằng QEMU
-  qemu-aarch64 ./hello_arm_static
-  # Kết quả in ra:
-  # Hello, ARM World!
-  # Compiled for 64-bit ARM (AArch64)
-  ```
+### 2. Các Bước Cấu Hình Biên Dịch Chéo
+Ứng dụng LED Controller tương tác với Sysfs GPIO trên Linux được build chéo thông qua các lệnh CMake và chạy thử trên trình giả lập CPU QEMU:
+
+```bash
+# 1. Cấu hình sinh build files cho ARM64 bằng cách cấu hình compiler chéo
+cmake -B build_arm -DCMAKE_CXX_COMPILER=aarch64-linux-gnu-g++
+
+# 2. Tiến hành build dự án tạo ra nhị phân ARM64
+cmake --build build_arm
+
+# 3. Chạy giả lập chương trình ARM64 trên Host x86_64 bằng QEMU
+# Flag -L báo cho QEMU thư mục chứa các thư viện liên kết động động của ARM64
+qemu-aarch64 -L /usr/aarch64-linux-gnu build_arm/HelloArmApp
+```
+
+### 3. Xác Minh Kiến Trúc Đầu Ra
+Sử dụng lệnh `file` trên máy Host:
+```bash
+file build_arm/HelloArmApp
+```
+* **Kết quả trả về:** Chứa chuỗi `ELF 64-bit LSB executable, ARM aarch64 ... dynamically linked`, chứng minh file chạy đã được đóng gói chính xác cho hệ điều hành ARM 64-bit.
+* **Cơ chế mô phỏng (Simulation Mode):** Ứng dụng tích hợp khả năng phát hiện đường dẫn phần cứng `/sys/class/gpio`. Khi chạy giả lập trên Host, chương trình tự động chuyển sang Simulation Mode hiển thị trạng thái LED lên màn hình thay vì bị crash do thiếu phần cứng thật.
 
 ---
+
+## KẾT LUẬN & ĐÁNH GIÁ CHUNG
+
+* **Makefile:** Cung cấp khả năng kiểm soát chi tiết nhất đến từng bước biên dịch của compiler. Thích hợp cho các dự án quy mô vừa và nhỏ hoặc các tác vụ hệ thống tùy biến cao.
+* **CMake:** Ti chuẩn công nghiệp cho các dự án C++ lớn, đa nền tảng và đa module. Khả năng tự động hóa và tích hợp quản lý thư viện tĩnh/động rất mạnh mẽ.
+* **Cross-compilation:** Kỹ năng bắt buộc đối với lập trình viên hệ thống nhúng (Embedded Linux). Sự kết hợp giữa bộ cross-compiler (`aarch64-linux-gnu-g++`) và trình mô phỏng (`QEMU`) tạo ra một quy trình phát triển và kiểm thử cực kỳ nhanh chóng và tiện lợi trước khi deploy lên phần cứng thực tế.
 
 > [!NOTE]
-> Tất cả các bài tập trên đã được kiểm thử biên dịch thành công 100% trên môi trường Linux Ubuntu/Debian.
+> Toàn bộ 3 bài tập thực hành trên đã được thiết lập, biên dịch thành công 100% và chạy ổn định không phát sinh lỗi trên môi trường kiểm thử Linux.
