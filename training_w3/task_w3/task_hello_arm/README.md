@@ -117,7 +117,5 @@ file build_arm/HelloArmApp
 ```text
 build_arm/HelloArmApp: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, for GNU/Linux 3.7.0, BuildID[sha1]=..., not stripped
 ```
-> [!NOTE]
-> Nhãn **ARM aarch64** chứng minh rằng file nhị phân đã được biên dịch thành công cho kiến trúc ARM 64-bit.
 
 ---
