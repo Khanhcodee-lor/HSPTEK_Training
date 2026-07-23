@@ -1,0 +1,4 @@
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/build_arm/CMakeFiles/led_drive.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/build_arm/CMakeFiles/HelloArmApp.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/build_arm/CMakeFiles/edit_cache.dir
+/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/build_arm/CMakeFiles/rebuild_cache.dir

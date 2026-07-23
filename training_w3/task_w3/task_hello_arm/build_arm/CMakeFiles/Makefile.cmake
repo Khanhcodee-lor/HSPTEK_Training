@@ -7,7 +7,7 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 # The top level Makefile was generated from the following files:
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
-  "/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_cmake/CMakeLists.txt"
+  "/home/khanh/Workspace_company/train_w1/training_w3/task_w3/task_hello_arm/CMakeLists.txt"
   "CMakeFiles/3.28.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.28.3/CMakeSystem.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeCXXInformation.cmake"
@@ -40,7 +40,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/geometry_lib.dir/DependInfo.cmake"
-  "CMakeFiles/utils_lib.dir/DependInfo.cmake"
-  "CMakeFiles/geo_app.dir/DependInfo.cmake"
+  "CMakeFiles/led_drive.dir/DependInfo.cmake"
+  "CMakeFiles/HelloArmApp.dir/DependInfo.cmake"
   )

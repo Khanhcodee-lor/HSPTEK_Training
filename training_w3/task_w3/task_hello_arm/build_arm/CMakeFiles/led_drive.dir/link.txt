@@ -1,0 +1,2 @@
+/usr/bin/aarch64-linux-gnu-ar qc libled_drive.a CMakeFiles/led_drive.dir/src/led_controller.cpp.o
+/usr/bin/aarch64-linux-gnu-ranlib libled_drive.a

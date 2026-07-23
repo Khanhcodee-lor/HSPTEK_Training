@@ -1,0 +1,1 @@
+/usr/bin/aarch64-linux-gnu-g++ CMakeFiles/HelloArmApp.dir/src/main.cpp.o CMakeFiles/HelloArmApp.dir/src/led_controller.cpp.o -o HelloArmApp  -lpthread 
