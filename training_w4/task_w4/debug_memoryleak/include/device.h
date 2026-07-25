@@ -12,10 +12,11 @@ typedef struct Device {
     struct Device* next;
 }Device;
 
-Device createDevice(int deviceID, char* deviceName, char* ipAddress);
+Device* createDevice(int deviceID, char* deviceName, char* ipAddress);
 void addSensorToDevice(Device* device, int sensorID, char* sensorName, float lastValue);
 void addDeviceToList(Device** headRef, Device* device);
 void removeDeviceById(Device** headRef, int deviceID);
-void freeDevice(Device* headRef);
+void printDeviceList(Device* head);
+void freeDevice(Device* head);
 
 #endif

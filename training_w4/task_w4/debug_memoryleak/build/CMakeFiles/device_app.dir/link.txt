@@ -1,0 +1,1 @@
+/usr/bin/cc -g -O0 -Wall CMakeFiles/device_app.dir/app/main.c.o -o device_app  libdevice_core.a 

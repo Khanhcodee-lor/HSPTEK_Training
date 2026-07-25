@@ -7,7 +7,7 @@ typedef struct Sensor{
     float lastValue;
 } Sensor;
 
-Sensor createSensor(int sensorID, char* sensorName, float lastValue);
+Sensor createSensor(int sensorID, const char* sensorName, float lastValue);
 void freeSensorContent(Sensor* sensor);
 
 #endif

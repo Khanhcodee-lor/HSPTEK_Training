@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdevice_core.a CMakeFiles/device_core.dir/src/device.c.o CMakeFiles/device_core.dir/src/sensor.c.o
+/usr/bin/ranlib libdevice_core.a

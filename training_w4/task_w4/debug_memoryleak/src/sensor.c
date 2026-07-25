@@ -1,20 +1,19 @@
-#include <stdio.h>
+#include "sensor.h"
 #include <stdlib.h>
 #include <string.h>
-#include "sensor.h"
 
-Sensor createSensor (int id, const char* name, float val){
-    Sensor s;
-    s.sensorID = id;
-    s.sensorName = (char*) malloc(sizeof(char)*strlen(name)+1);
-    strcpy(s.sensorName, name);
-    s.lastValue = val;
-    return s;
+Sensor createSensor(int id, const char *name, float val) {
+  Sensor sensor;
+  sensor.sensorID = id;
+  sensor.sensorName = (char *)malloc(sizeof(char) * strlen(name) + 1);
+  strcpy(sensor.sensorName, name);
+  sensor.lastValue = val;
+  return sensor;
 }
 
-void freeSensorContent(Sensor* sensor){
-    if (s && s->sensor_name) {
-        free(s->sensor_name);
-        s->sensor_name = NULL;
-    }
+void freeSensorContent(Sensor *sensor) {
+  if (sensor && sensor->sensorName) {
+    free(sensor->sensorName);
+    sensor->sensorName = NULL;
+  }
 }

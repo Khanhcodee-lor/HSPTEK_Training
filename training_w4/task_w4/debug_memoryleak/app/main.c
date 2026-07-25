@@ -3,7 +3,7 @@
 
 int main(){
     printf("UNIFIED DEVICE MANAGER");
-    Device* head = NULL
+    Device* head = NULL;
 
     Device* d1 = createDevice(101, "Gateway", "192.168.1.50");
     Device* d2 = createDevice(102, "SensorNode", "192.168.1.51");
