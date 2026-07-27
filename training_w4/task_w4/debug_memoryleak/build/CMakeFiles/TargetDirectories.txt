@@ -1,4 +1,0 @@
-/home/khanh/Workspace_company/train_w1/training_w4/task_w4/debug_memoryleak/build/CMakeFiles/device_core.dir
-/home/khanh/Workspace_company/train_w1/training_w4/task_w4/debug_memoryleak/build/CMakeFiles/device_app.dir
-/home/khanh/Workspace_company/train_w1/training_w4/task_w4/debug_memoryleak/build/CMakeFiles/edit_cache.dir
-/home/khanh/Workspace_company/train_w1/training_w4/task_w4/debug_memoryleak/build/CMakeFiles/rebuild_cache.dir

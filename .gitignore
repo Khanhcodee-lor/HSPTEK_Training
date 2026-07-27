@@ -1,0 +1,21 @@
+# Build directories
+build/
+build_*/
+bin/
+obj/
+CMakeFiles/
+CMakeCache.txt
+
+# Compiled binary files & libraries
+*.o
+*.a
+*.so
+*.dylib
+*.out
+
+# Specific build executables
+client_cpp
+server_cpp
+
+# Log files
+*.log
