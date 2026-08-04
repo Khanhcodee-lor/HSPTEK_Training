@@ -256,19 +256,3 @@ dmesg | tail -n 1
 
 ---
 
-## 3. Tổng Kết
-
-### 3.1. Kiến thức đã nắm được
-| STT | Nội dung | Mức độ |
-|-----|----------|--------|
-| 1 | Hiểu kiến trúc Device Driver trong Linux (Char / Block / Network) | ✅ Nắm vững |
-| 2 | Hiểu Major/Minor Number và cơ chế cấp phát (tĩnh/động) | ✅ Nắm vững |
-| 3 | Nắm được cấu trúc `file_operations`, `cdev`, quy trình đăng ký driver | ✅ Nắm vững |
-| 4 | Hiểu cơ chế truyền dữ liệu `copy_to_user` / `copy_from_user` | ✅ Nắm vững |
-| 5 | Tự động tạo device node bằng `class_create` + `device_create` | ✅ Nắm vững |
-| 6 | Cross-compilation cho ARM 32-bit (BeagleBone Black) | ✅ Nắm vững |
-| 7 | Viết Makefile cho Kernel Module + User Space App | ✅ Nắm vững |
-| 8 | Mô hình xử lý lỗi `goto cleanup` trong Kernel | ✅ Nắm vững |
-
-### 3.2. Kết luận
-Tuần 6 đã hoàn thành việc tìm hiểu và thực hành **Linux Character Device Driver** trên nền tảng phần cứng thực **BeagleBone Black (ARM Cortex-A8, 32-bit)**. Bài tập bao gồm viết một Kernel Module hoàn chỉnh với đầy đủ các thao tác `open`, `read`, `write`, `close`, cross-compile cho kiến trúc ARM, triển khai và kiểm thử thành công trên board thực. Đây là bước tiến quan trọng từ việc chạy trên máy ảo (Tuần 5) sang chạy trên phần cứng thực tế.
