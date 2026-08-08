@@ -1,0 +1,37 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	compatible = "brcm,bcm2711";
+	/* Đặt chân GPIO 21 điện trở kéo nội */
+	
+	fragment@0 {
+		target = <&gpio>;
+		
+		__overlay__ {
+			my_led {
+				brcm,pins = <21>;
+				brcm,function = <1>;// 1 = output
+				brcm,pull = <0>;// 0 = no pull
+			};
+		};
+	};
+	
+	/* Gán chân GPIO 21 vào driver có sẵn mang tên "gpio-leds*/
+	fragment@1 {
+		target-path = "/";
+		
+		__overlay__ {
+			my_custom_leds {
+				compatible = "gpio-leds";
+				
+				my_led: led_node {
+					label = "my_led";
+					gpios = <&gpio 21 0>;  /* GPIO 21, active low */
+					default-state = "off";
+					linux,default-trigger = "heartbeat";
+				};
+			};
+		};
+	};
+};
